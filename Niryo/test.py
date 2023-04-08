@@ -10,3 +10,11 @@ robot_ip = robot_ip_sim if simu else robot_ip_rpi
 
 robot = NiryoRobot(ip_address = robot_ip)
 robot.arm.calibrate_auto()
+robot.arm.move_joints(0, 0, 0, 0, 0, 0)
+robot.arm.move_joints(0, 0, 0, 0, 0, 0)
+robot.arm.move_joints(0, 0, 0, 0, 0, 0)
+robot.arm.move_joints(0, 0, 0, 0, 0, 0)
+robot.arm.move_joints(0, 0, 0, 0, 0, 0)
+robot.arm.move_joints(0, 0, 0, 0, 0, 0)
+robot.arm.move_joints(0, 0, 0, 0, 0, 0)
+robot.arm.move_joints(0, 0, 0, 0, 0, 0)
