@@ -8,6 +8,6 @@ device_client = IoTHubDeviceClient.create_from_connection_string(device_connecti
 device_client.connect()
 
 data = pyniryo.Robot.get_joints()
-message = Message(json.dump(data))
+message = Message(json.dumps(data))
 device_client.send_message(message)
 device_client.disconnect()
