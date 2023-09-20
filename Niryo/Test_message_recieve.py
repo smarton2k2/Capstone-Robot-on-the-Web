@@ -1,9 +1,14 @@
 from azure.eventhub import EventHubConsumerClient
+from pyniryo import *
+import ast
 
 EVENTHUB_COMPATIBLE_ENDPOINT = "sb://ihsuprodpnres004dednamespace.servicebus.windows.net/"
 EVENTHUB_COMPATIBLE_PATH = "iothub-ehub-niryo-25211978-9c0160d5de"
 IOTHUB_SAS_KEY = "7drXDIezuMMCtLij2eLGqTiG6q+DCF/k+AIoTHxp+Lo="
 SHARED_ACCESS_KEY_NAME = "iothubowner"
+robot_ip_address = "169.254.200.200"
+robot = NiryoRobot(robot_ip_address)
+robot.calibrate_auto()
 
 def get_eventhub_credentials():
     return {
@@ -16,7 +21,10 @@ def get_eventhub_credentials():
 def on_event_batch(partition_context, events):
     for event in events:
         print(f"Received event from partition: {partition_context.partition_id}.")
-        print(f"Telemetry received: {event.body_as_str()}")
+        x = event.body_as_str()
+        lst = ast.literal_eval(x)
+        print(f"Telemetry received: {lst}")
+        robot.move_joints(lst[0], lst[1], lst[2], lst[3], lst[4], lst[5])
     partition_context.update_checkpoint()
 
 def main():
