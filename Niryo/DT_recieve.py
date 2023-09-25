@@ -3,16 +3,16 @@ import numpy as np
 import time
 from  azure.eventhub import EventHubConsumerClient
 
-robot_ip_address = "169.254.200.200"
+# robot_ip_address = "169.254.200.200"
 
-robot = pyniryo.NiryoRobot(robot_ip_address)
-robot.calibrate_auto()
-robot.move_to_home_pose()
+# robot = pyniryo.NiryoRobot(robot_ip_address)
+# robot.calibrate_auto()
+# robot.move_to_home_pose()
 
-EVENTHUB_COMPATIBLE_ENDPOINT = "sb://iothub-ns-niryoiotse-25113370-d460bcb1a9.servicebus.windows.net/"
-EVENTHUB_COMPATIBLE_PATH = "niryoiotserver"
-IOTHUB_SAS_KEY = "Qn1JrI3rIHIci3JJo9KqjICugOdNx6MQncVLvnYoSmA="
-SHARED_ACCESS_KEY_NAME="Niryo_robot"
+EVENTHUB_COMPATIBLE_ENDPOINT = "sb://ihsuprodpnres017dednamespace.servicebus.windows.net/"
+EVENTHUB_COMPATIBLE_PATH = "iothub-ehub-niryoiot-25263541-af3f4ab300"
+IOTHUB_SAS_KEY = "JCqKnk2r6LzjU3QQyd74eGLHneplSDlHmAIoTHWhsic="
+SHARED_ACCESS_KEY_NAME = "iothubowner"
 
 def on_event_batch(partition_context, events):
     for event in events:
