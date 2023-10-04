@@ -9,10 +9,10 @@ from  azure.eventhub import EventHubConsumerClient
 # robot.calibrate_auto()
 # robot.move_to_home_pose()
 
-EVENTHUB_COMPATIBLE_ENDPOINT = "sb://ihsuprodpnres017dednamespace.servicebus.windows.net/"
-EVENTHUB_COMPATIBLE_PATH = "iothub-ehub-niryoiot-25263541-af3f4ab300"
-IOTHUB_SAS_KEY = "JCqKnk2r6LzjU3QQyd74eGLHneplSDlHmAIoTHWhsic="
-SHARED_ACCESS_KEY_NAME = "iothubowner"
+# EVENTHUB_COMPATIBLE_ENDPOINT = "sb://ihsuprodpnres017dednamespace.servicebus.windows.net/"
+# EVENTHUB_COMPATIBLE_PATH = "iothub-ehub-niryoiot-25263541-af3f4ab300"
+# IOTHUB_SAS_KEY = "JCqKnk2r6LzjU3QQyd74eGLHneplSDlHmAIoTHWhsic="
+# SHARED_ACCESS_KEY_NAME = "iothubowner"
 
 def on_event_batch(partition_context, events):
     for event in events:
