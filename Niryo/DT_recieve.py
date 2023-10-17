@@ -13,12 +13,15 @@ app = Flask(__name__)
 
 @app.route('/get_data')
 def get_data():
-    return jsonify({"Current location": latest_data})
+    if latest_data:
+        return jsonify({"data": latest_data})
+    return jsonify({"error": "No data received yet."})
 
 def on_event_batch(partition_context, events):
     global latest_data
     for event in events:
         latest_data = event.body_as_str()
+        print("Received data: " + latest_data)
     partition_context.update_checkpoint()
 
 def azure_listener():
