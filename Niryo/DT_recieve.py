@@ -38,4 +38,4 @@ def azure_listener():
 if __name__ == '__main__':
     azure_thread = threading.Thread(target=azure_listener)
     azure_thread.start()
-    app.run(port=5000, debug=True)
+    app.run(port=5000)
