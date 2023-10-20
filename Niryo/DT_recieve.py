@@ -33,7 +33,7 @@ def azure_listener():
         with client:
             client.receive_batch(on_event_batch, starting_position="-1")
     except KeyboardInterrupt:
-        pass
+        print("Stopped receiving.")
 
 if __name__ == '__main__':
     azure_thread = threading.Thread(target=azure_listener)
