@@ -24,7 +24,7 @@ def on_event_batch(partition_context, events):
         print("Received data: " + latest_data)
     partition_context.update_checkpoint()
 
-def azure_listener():
+def azure_reciever():
     client = EventHubConsumerClient.from_connection_string(
         "Endpoint=" + EVENTHUB_COMPATIBLE_ENDPOINT + ";SharedAccessKeyName=" + SHARED_ACCESS_KEY_NAME + ";SharedAccessKey=" + IOTHUB_SAS_KEY + ";EntityPath=" + EVENTHUB_COMPATIBLE_PATH,
         consumer_group="$Default",
@@ -36,6 +36,6 @@ def azure_listener():
         print("Stopped receiving.")
 
 if __name__ == '__main__':
-    azure_thread = threading.Thread(target=azure_listener)
+    azure_thread = threading.Thread(target=azure_receiver)
     azure_thread.start()
     app.run(port=5000)
