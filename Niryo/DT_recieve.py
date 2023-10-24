@@ -17,21 +17,21 @@ def get_data():
         return jsonify({"data": latest_data})
     return jsonify({"error": "No data received yet."})
 
-def on_event_batch(partition_context, events):
+def azure_data_receiver(partition_context, events):
     global latest_data
     for event in events:
         latest_data = event.body_as_str()
         print("Received data: " + latest_data)
     partition_context.update_checkpoint()
 
-def azure_reciever():
+def azure_receiver():
     client = EventHubConsumerClient.from_connection_string(
         "Endpoint=" + EVENTHUB_COMPATIBLE_ENDPOINT + ";SharedAccessKeyName=" + SHARED_ACCESS_KEY_NAME + ";SharedAccessKey=" + IOTHUB_SAS_KEY + ";EntityPath=" + EVENTHUB_COMPATIBLE_PATH,
         consumer_group="$Default",
     )
     try:
         with client:
-            client.receive_batch(on_event_batch, starting_position="-1")
+            client.receive_batch(azure_data_receiver, starting_position="-1")
     except KeyboardInterrupt:
         print("Stopped receiving.")
 
