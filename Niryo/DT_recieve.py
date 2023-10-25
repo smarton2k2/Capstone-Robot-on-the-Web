@@ -17,10 +17,10 @@ def get_data():
         return jsonify({"data": latest_data})
     return jsonify({"error": "No data received yet."})
 
-def azure_data_receiver(partition_context, events):
+def azure_data_receiver(partition_context, data_set):
     global latest_data
-    for event in events:
-        latest_data = event.body_as_str()
+    for data in events:
+        latest_data = data.body_as_str()
         print("Received data: " + latest_data)
     partition_context.update_checkpoint()
 
