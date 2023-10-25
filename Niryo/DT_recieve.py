@@ -19,7 +19,7 @@ def get_data():
 
 def azure_data_receiver(partition_context, data_set):
     global latest_data
-    for data in events:
+    for data in data_set:
         latest_data = data.body_as_str()
         print("Received data: " + latest_data)
     partition_context.update_checkpoint()
