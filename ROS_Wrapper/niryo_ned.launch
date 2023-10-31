@@ -1,0 +1,3 @@
+<launch>
+  <node name="niryo_ned_node" pkg="niryo_ned_wrapper" type="niryo_ned_node.py" output="screen"/>
+</launch>
