@@ -1,13 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Libs
 import rospy
 from pynput import keyboard
+from azure.iot.device import IoTHubDeviceClient, Message
 
 # Messages
 from niryo_robot_msgs.msg import CommandStatus
 from std_msgs.msg import Bool
-from niryo_robot_msgs.msg import HardwareStatus
+from niryo_robot_msgs.msg import HardwareStatus, RobotState
 
 # Services
 from niryo_robot_arm_commander.srv import JogShift, JogShiftRequest
@@ -33,6 +34,10 @@ class JogClient:
         self.check_calibration()
         if self.current_learning_mode:
             self.set_learning_mode(False)
+            
+        device_connection_string = "HostName=niryoiot.azure-devices.net;DeviceId=NiryoNed2;SharedAccessKey=Ee0uclVHdESQI+NPmG8z5G3ZA1ET0dkpiZ5lbyOY4Oo=="
+        self.device_client = IoTHubDeviceClient.create_from_connection_string(device_connection_string)
+        self.device_client.connect()
 
     # - CALLBACKS
     def __update_learning_state(self, data):
@@ -40,6 +45,25 @@ class JogClient:
 
     def __callback_subscriber_jog_enabled(self, ros_data):
         self.__jog_enabled = ros_data.data
+
+    def get_current_pose(self):
+        try:
+            rospy.wait_for_service('/niryo_robot_poses_handlers/get_pose', 2)
+            get_pose_service = rospy.ServiceProxy('/niryo_robot_poses_handlers/get_pose', GetPose)
+            pose_response = get_pose_service()
+            return pose_response.pose
+        except (rospy.ROSException, rospy.ServiceException) as e:
+            rospy.logerr("Service call failed: %s"%e)
+            return None
+
+    def send_pose_to_iot_hub(self, pose):
+        message = Message(str(pose))
+        message.message_id = uuid.uuid4()
+        message.correlation_id = "correlation-1234"
+        message.content_encoding = "utf-8"
+        message.content_type = "application/json"
+        self.device_client.send_message(message)
+        rospy.loginfo("Message successfully sent to Azure IoT Hub")
 
     # - METHODS FOR INITIALISATION
     @staticmethod
@@ -118,6 +142,10 @@ class JogClient:
             req.shift_values = shift_values
             response = jog_commander_service(req)
             print(response)
+
+            current_pose = self.get_current_pose()
+            if current_pose:
+                self.send_pose_to_iot_hub(current_pose)
         except rospy.ServiceException as e:
             raise Exception("Service call failed: {}".format(e))
         rospy.sleep(0.15 - (rospy.get_time() - init_time))
