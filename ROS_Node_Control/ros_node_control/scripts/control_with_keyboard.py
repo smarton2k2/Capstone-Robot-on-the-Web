@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # Libs
+import uuid
 import rospy
 from pynput import keyboard
 from azure.iot.device import IoTHubDeviceClient, Message
@@ -9,6 +10,7 @@ from azure.iot.device import IoTHubDeviceClient, Message
 from niryo_robot_msgs.msg import CommandStatus
 from std_msgs.msg import Bool
 from niryo_robot_msgs.msg import HardwareStatus, RobotState
+from sensor_msgs.msg import JointState
 
 # Services
 from niryo_robot_arm_commander.srv import JogShift, JogShiftRequest
@@ -26,6 +28,9 @@ class JogClient:
         self.current_learning_mode = True
         rospy.Subscriber('/niryo_robot/learning_mode/state', Bool, self.__update_learning_state)
 
+        self.current_joint_state = None
+        rospy.Subscriber('/joints_states', JointState, self.__callback_joint_states, queue_size=1)
+
         # Shifting values
         self.shift_pose_value = 0.01
         self.shift_angle_value = 0.05
@@ -40,11 +45,17 @@ class JogClient:
         self.device_client.connect()
 
     # - CALLBACKS
+    def __callback_joint_states(self, data):
+        self.current_joint_state = data
+
     def __update_learning_state(self, data):
         self.current_learning_mode = data.data
 
     def __callback_subscriber_jog_enabled(self, ros_data):
         self.__jog_enabled = ros_data.data
+
+    def get_joint_state(self):
+        return self.current_joint_state
 
     def get_current_pose(self):
         try:
@@ -56,7 +67,7 @@ class JogClient:
             rospy.logerr("Service call failed: %s"%e)
             return None
 
-    def send_pose_to_iot_hub(self, pose):
+    def send_data_to_iot_hub(self, pose):
         message = Message(str(pose))
         message.message_id = uuid.uuid4()
         message.correlation_id = "correlation-1234"
@@ -143,7 +154,7 @@ class JogClient:
             response = jog_commander_service(req)
             print(response)
 
-            current_pose = self.get_current_pose()
+            current_pose = self.get_joint_state()
             if current_pose:
                 self.send_pose_to_iot_hub(current_pose)
         except rospy.ServiceException as e:
