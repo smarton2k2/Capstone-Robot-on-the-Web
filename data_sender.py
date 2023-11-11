@@ -14,17 +14,19 @@ device_client.connect()
 
 combined_data = {}
 data_lock = threading.Lock()
-last_update = 0
+last_update_time = 0
 
 def __callback_hs(data):
     try:
-        update_data("hardware_status", {"temperatures": data.temperatures, "voltages": data.voltages})
+        update_data("temperatures", data.temperatures)
+        update_data("voltages", data.voltages)
     except Exception as e:
         rospy.logerr("Error in callback: {}".format(e))
 
 def __callback_js(data):
     try:
-        update_data("joint_states", {"effort": data.effort, "position": data.position})
+        update_data("effort", data.effort)
+        update_data("position", data.position)
     except Exception as e:
         rospy.logerr("Error in callback: {}".format(e))
 
