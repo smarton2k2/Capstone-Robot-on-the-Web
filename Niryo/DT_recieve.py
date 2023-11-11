@@ -1,20 +1,22 @@
 from flask import Flask, jsonify
 from azure.eventhub import EventHubConsumerClient
 import threading
+import json
+import sys
 
 EVENTHUB_COMPATIBLE_ENDPOINT = "sb://ihsuprodpnres017dednamespace.servicebus.windows.net/"
 EVENTHUB_COMPATIBLE_PATH = "iothub-ehub-niryoiot-25263541-af3f4ab300"
 IOTHUB_SAS_KEY = "JCqKnk2r6LzjU3QQyd74eGLHneplSDlHmAIoTHWhsic="
 SHARED_ACCESS_KEY_NAME = "iothubowner"
 
-latest_data = ""
+latest_data = None
 
 app = Flask(__name__)
 
 @app.route('/get_data')
 def get_data():
     if latest_data:
-        return jsonify({"data": latest_data})
+        return jsonify(latest_data)
     return jsonify({"error": "No data received yet."})
 
 def azure_data_receiver(partition_context, data_set):
@@ -34,6 +36,7 @@ def azure_receiver():
             client.receive_batch(azure_data_receiver, starting_position="-1")
     except KeyboardInterrupt:
         print("Stopped receiving.")
+        sys.exit(0)
 
 if __name__ == '__main__':
     azure_thread = threading.Thread(target=azure_receiver)
