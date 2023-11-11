@@ -18,17 +18,17 @@ last_update_time = 0
 
 def __callback_hs(data):
     try:
-        update_data("temperatures", data.temperatures)
-        update_data("voltages", data.voltages)
+        update_data("temperatures", list(data.temperatures))
+        update_data("voltages", list(data.voltages))
     except Exception as e:
-        rospy.logerr("Error in callback: {}".format(e))
+        rospy.logerr(f"Error in callback: {e}")
 
 def __callback_js(data):
     try:
-        update_data("effort", data.effort)
-        update_data("position", data.position)
+        update_data("effort", list(data.effort))
+        update_data("position", list(data.position))
     except Exception as e:
-        rospy.logerr("Error in callback: {}".format(e))
+        rospy.logerr(f"Error in callback: {e}")
 
 def update_data(key, value):
     global combined_data, last_update_time
