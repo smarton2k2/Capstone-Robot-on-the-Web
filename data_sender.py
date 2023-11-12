@@ -38,7 +38,7 @@ def update_data(key, value):
 
 def send_data():
     global combined_data, last_update_time
-    send_interval = 0.5
+    send_interval = 0.75
     while not rospy.is_shutdown():
         time.sleep(send_interval)
         with data_lock:
