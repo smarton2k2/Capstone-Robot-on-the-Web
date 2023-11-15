@@ -16,14 +16,15 @@ app = Flask(__name__)
 @app.route('/get_data')
 def get_data():
     if latest_data:
-        return jsonify(latest_data)
+        return latest_data
     return jsonify({"error": "No data received yet."})
 
 def azure_data_receiver(partition_context, data_set):
     global latest_data
     for data in data_set:
         latest_data = data.body_as_str()
-        print("Received data: " + latest_data)
+        latest_data = json.loads(latest_data)
+        print(latest_data["position"])
     partition_context.update_checkpoint()
 
 def azure_receiver():
@@ -36,9 +37,9 @@ def azure_receiver():
             client.receive_batch(azure_data_receiver, starting_position="-1")
     except KeyboardInterrupt:
         print("Stopped receiving.")
-        sys.exit(0)
+        sys.exit(1)
 
 if __name__ == '__main__':
     azure_thread = threading.Thread(target=azure_receiver)
     azure_thread.start()
-    app.run(port=5000)
+    app.run(port=5000, debug=True)
