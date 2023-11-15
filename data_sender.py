@@ -39,7 +39,7 @@ def update_data(key, value):
 
 def send_data():
     global combined_data, last_update_time
-    send_interval = 0.75
+    send_interval = 0.5
     alive_interval = 60
     last_alive_time = time.time()
 
@@ -53,11 +53,6 @@ def send_data():
                     rospy.loginfo("Sent data to Azure: {}".format(combined_data))
                 except Exception as e:
                     rospy.logerr("Error sending data to Azure: {}".format(e))
-
-            if current_time - last_alive_time >= alive_interval:
-                alive_message = "Alive message from Raspberry Pi at {}".format(time.ctime())
-                send_console_message(alive_message)
-                last_alive_time = current_time
 
 def listener():
     rospy.init_node('data_sender_node', anonymous=True)
