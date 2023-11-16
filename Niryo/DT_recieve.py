@@ -13,7 +13,7 @@ latest_data = None
 
 app = Flask(__name__)
 
-@app.route('/get_data')
+@app.route('/get_data', methods=['GET'])
 def get_data():
     if latest_data:
         return latest_data
@@ -24,7 +24,7 @@ def azure_data_receiver(partition_context, data_set):
     for data in data_set:
         latest_data = data.body_as_str()
         latest_data = json.loads(latest_data)
-        print(latest_data["position"])
+        # print(latest_data["position"])
     partition_context.update_checkpoint()
 
 def azure_receiver():
@@ -42,4 +42,4 @@ def azure_receiver():
 if __name__ == '__main__':
     azure_thread = threading.Thread(target=azure_receiver)
     azure_thread.start()
-    app.run(port=5000, debug=True)
+    app.run(port=5000)
