@@ -3,11 +3,16 @@ from azure.eventhub import EventHubConsumerClient
 import threading
 import json
 import sys
+from azure.iot.device import IoTHubDeviceClient, Message
 
 EVENTHUB_COMPATIBLE_ENDPOINT = "sb://ihsuprodpnres017dednamespace.servicebus.windows.net/"
 EVENTHUB_COMPATIBLE_PATH = "iothub-ehub-niryoiot-25263541-af3f4ab300"
 IOTHUB_SAS_KEY = "JCqKnk2r6LzjU3QQyd74eGLHneplSDlHmAIoTHWhsic="
 SHARED_ACCESS_KEY_NAME = "iothubowner"
+
+device_connection_string = "HostName=niryoiot.azure-devices.net;DeviceId=NiryoNed2;SharedAccessKey=Ee0uclVHdESQI+NPmG8z5G3ZA1ET0dkpiZ5lbyOY4Oo=="
+device_client = IoTHubDeviceClient.create_from_connection_string(device_connection_string)
+device_client.connect()
 
 latest_data = None
 
@@ -18,6 +23,16 @@ def get_data():
     if latest_data:
         return latest_data
     return jsonify({"error": "No data received yet."})
+
+@app.route('/your-endpoint', methods=['POST'])
+def receive_data_from_unity():
+    try:
+        data = request.json
+        print("Received data from Unity:", data)
+        device_client.send_message(json.dumps(data))
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        return jsonify({"failed": e}), 500
 
 def azure_data_receiver(partition_context, data_set):
     global latest_data
