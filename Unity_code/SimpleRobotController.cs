@@ -30,7 +30,6 @@ namespace Unity.Robotics.UrdfImporter
         public Text VoltageText;
         public Text EffortText;
         public float fraction;
-        public Button sendButton;
 
          public class Data
         {
@@ -78,45 +77,45 @@ namespace Unity.Robotics.UrdfImporter
 
         }
 
-        IEnumerator PostJointData(string url, JointsendData jointPositionsData)
-        {
-            string jsonData = JsonUtility.ToJson(jointPositionsData);
-            using (UnityWebRequest request = UnityWebRequest.Post(url, jsonData))
-            {
-                byte[] bodyRaw = new System.Text.UTF8Encoding().GetBytes(jsonData);
-                request.uploadHandler =  new UploadHandlerRaw(bodyRaw);
-                request.downloadHandler = new DownloadHandlerBuffer();
-                request.SetRequestHeader("Content-Type", "application/json");
+        // IEnumerator PostJointData(string url, JointsendData jointPositionsData)
+        // {
+        //     string jsonData = JsonUtility.ToJson(jointPositionsData);
+        //     using (UnityWebRequest request = UnityWebRequest.Post(url, jsonData))
+        //     {
+        //         byte[] bodyRaw = new System.Text.UTF8Encoding().GetBytes(jsonData);
+        //         request.uploadHandler =  new UploadHandlerRaw(bodyRaw);
+        //         request.downloadHandler = new DownloadHandlerBuffer();
+        //         request.SetRequestHeader("Content-Type", "application/json");
 
-                yield return request.SendWebRequest();
+        //         yield return request.SendWebRequest();
 
-                if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
-                {
-                    Debug.LogError("Error sending joint positions: " + request.error);
-                }
-                else
-                {
-                    Debug.Log("Joint positions sent successfully");
-                }
-            }
-        }
+        //         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+        //         {
+        //             Debug.LogError("Error sending joint positions: " + request.error);
+        //         }
+        //         else
+        //         {
+        //             Debug.Log("Joint positions sent successfully");
+        //         }
+        //     }
+        // }
 
 
-        void SendDataToServer()
-        {
-            JointsendData jointPositionsData = new JointsendData
-            {
-                positions = new float[jointArticulationBodies.Length],
-            };
+        // void SendDataToServer()
+        // {
+        //     JointsendData jointPositionsData = new JointsendData
+        //     {
+        //         positions = new float[jointArticulationBodies.Length],
+        //     };
 
-            for (int i = 0; i < jointArticulationBodies.Length; i++)
-            {
-                jointPositionsData.positions[i] = jointArticulationBodies[i].jointPosition[0] * Mathf.Deg2Rad;
-            }
+        //     for (int i = 0; i < jointArticulationBodies.Length; i++)
+        //     {
+        //         jointPositionsData.positions[i] = jointArticulationBodies[i].jointPosition[0] * Mathf.Deg2Rad;
+        //     }
 
-            // StartCoroutine(PostJointData("http://localhost:5000/recieve_data", jointPositionsData));
-            Debug.Log(jointPositionsData.positions[0]+", "+jointPositionsData.positions[1]+", "+jointPositionsData.positions[2]+", "+jointPositionsData.positions[3]+", "+jointPositionsData.positions[4]+", "+jointPositionsData.positions[5]);
-        }
+        //     // StartCoroutine(PostJointData("http://localhost:5000/recieve_data", jointPositionsData));
+        //     Debug.Log(jointPositionsData.positions[0]+", "+jointPositionsData.positions[1]+", "+jointPositionsData.positions[2]+", "+jointPositionsData.positions[3]+", "+jointPositionsData.positions[4]+", "+jointPositionsData.positions[5]);
+        // }
 
 
         IEnumerator GetDataFromAzure()
