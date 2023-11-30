@@ -9,8 +9,8 @@ import json
 import threading
 import os
 
-# device_connection_string = "HostName=niryoiot.azure-devices.net;DeviceId=NiryoNed2;SharedAccessKey=Ee0uclVHdESQI+NPmG8z5G3ZA1ET0dkpiZ5lbyOY4Oo==" # free
-device_connection_string = "HostName=Niryo-Sender.azure-devices.net;DeviceId=Digital-Twin;SharedAccessKey=tqKyr4j+MaXMCKDFmb3ejTmOLCOOfwRfLAIoTPgHjm4=" # paid
+# device_connection_string = "HostName=niryoiot.azure-devices.net;DeviceId=NiryoNed2;SharedAccessKey=Ee0uclVHdESQI+NPmG8z5G3ZA1ET0dkpiZ5lbyOY4Oo==" #free
+device_connection_string = "HostName=Niryo-Sender.azure-devices.net;DeviceId=Digital-Twin;SharedAccessKey=tqKyr4j+MaXMCKDFmb3ejTmOLCOOfwRfLAIoTPgHjm4=" #paid
 device_client = IoTHubDeviceClient.create_from_connection_string(device_connection_string)
 device_client.connect()
 
