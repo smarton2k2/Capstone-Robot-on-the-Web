@@ -24,9 +24,13 @@ def azure_data_receiver(partition_context, data_set):
     for data in data_set:
         latest_data = data.body_as_str()
         latest_data = json.loads(latest_data)
-        latest_data = latest_data['positions']
+        if "positions" in latest_data:
+            latest_data = latest_data['positions']
+            robot.move_joints(latest_data)
+            print(latest_data)
+        else:
+            pass
         # print(latest_data)
-        robot.move_joints(latest_data)
     partition_context.update_checkpoint()
 
 def azure_receiver():
