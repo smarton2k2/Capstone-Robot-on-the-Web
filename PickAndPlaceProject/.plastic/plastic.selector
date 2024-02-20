@@ -1,0 +1,4 @@
+repository "PickAndPlaceProject@harigana22@cloud"
+  path "/"
+    br "/main"
+    co "/main"
